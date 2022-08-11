@@ -1,0 +1,41 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Sample Node.js Application
+
+on:
+  workflow_dispatch:
+    inputs:
+      PRODUCT:
+        description: "배포 대상 프로덕트"
+        required: true
+        type: choice
+        options:
+        - "auth"
+        - "orders"
+        - "productions"
+      VERSION:
+        description: "배포 버전"
+        required: true
+        type: string
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Git Clone
+      uses: actions/checkout@v3
+      with:
+#        ref: ${{ inputs.VERSION }}
+        path: ${{ inputs.PRODUCT }}
+    - name: Login to Harbor
+      uses: docker/login-action@v2
+      with:
+        registry: ops-apne1-harbor.knowre-dev.com
+        username: ${{ secrets.HARBOR_USERNAME }}
+        password: ${{ secrets.HARBOR_TOKEN }}
+    - name: Build Docker
+      run: |
+        docker build -t ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT}}:${{ inputs.VERSION }}
+        docker push ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT}}:${{ inputs.VERSION }}
