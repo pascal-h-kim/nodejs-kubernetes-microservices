@@ -36,8 +36,7 @@ jobs:
         password: ${{ secrets.HARBOR_TOKEN }}
     - name: Build Docker
       run: |
-#        ls -CFR
-        cd ${{ inputs.PRODUCT}}
+        cd ${{ inputs.PRODUCT }}
         export DOCKER_BUILDKIT=1
-        docker build -t ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT}}:${{ inputs.VERSION }} .
-        docker push ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT}}:${{ inputs.VERSION }}
+        docker build -t ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT }}:${{ inputs.VERSION }} .
+        docker push ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT }}:${{ inputs.VERSION }}
