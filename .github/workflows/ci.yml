@@ -40,3 +40,4 @@ jobs:
         export DOCKER_BUILDKIT=1
         docker build -t ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT }}:${{ inputs.VERSION }} .
         docker push ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT }}:${{ inputs.VERSION }}
+        docker push ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT }}:latest
