@@ -32,10 +32,10 @@ jobs:
     - name: Login to Harbor
       uses: docker/login-action@v1
       with:
-        registry: ops-apne1-harbor.knowre-dev.com
+        registry: ops-harbor-apne1.knowre-dev.com
         username: ${{ secrets.HARBOR_USERNAME }}
         password: ${{ secrets.HARBOR_TOKEN }}
     - name: Build Docker
       run: |
-        docker build -t ops-apne1-harbor.knowre-dev.com/ekstest/${{ inputs.PRODUCT}}:${{ inputs.VERSION }}
-        docker push ops-apne1-harbor.knowre-dev.com/ekstest/${{ inputs.PRODUCT}}:${{ inputs.VERSION }}
+        docker build -t ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT}}:${{ inputs.VERSION }}
+        docker push ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT}}:${{ inputs.VERSION }}
