@@ -30,7 +30,7 @@ jobs:
 #        ref: ${{ inputs.VERSION }}
         path: ${{ inputs.PRODUCT }}
     - name: Login to Harbor
-      uses: docker/login-action@v2
+      uses: docker/login-action@v1
       with:
         registry: ops-apne1-harbor.knowre-dev.com
         username: ${{ secrets.HARBOR_USERNAME }}
