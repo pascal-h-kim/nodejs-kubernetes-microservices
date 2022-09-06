@@ -16,11 +16,11 @@ app.listen(port, () => {
 });
 
 app.get('/liveness', async (req, res) => {
-  res.status(200);
+  res.status(200).json({status:"success"});
 });
 
 app.get('/readiness', async (req, res) => {
-  res.status(200);
+  res.status(200).json({status:"success"});
 });
 
 app.post('/signup', async (req, res) => {
