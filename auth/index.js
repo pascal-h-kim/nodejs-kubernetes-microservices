@@ -15,6 +15,14 @@ app.listen(port, () => {
   console.log(`Users Service at ${port}`);
 });
 
+app.get('/liveness', async (req, res) => {
+  res.status(200);
+});
+
+app.get('/readiness', async (req, res) => {
+  res.status(200);
+});
+
 app.post('/signup', async (req, res) => {
   let { name, email, password } = req.body;
   password = await bcrypt.hash(password, 12);
