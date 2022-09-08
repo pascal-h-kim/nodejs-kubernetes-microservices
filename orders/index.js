@@ -72,4 +72,12 @@ app.get('/orders', async (req, res) => {
   res.status(200).json(results);
 });
 
+app.get('/liveness', async (req, res) => {
+  return res.status(200).json({status:"success"});
+});
+
+app.get('/readiness', async (req, res) => {
+  return res.status(200).json({status:"success"});
+});
+
 sequelize.sync();

@@ -30,6 +30,14 @@ app.listen(port, () => {
   console.log(`Products Service at ${port}`);
 });
 
+app.get('/liveness', async (req, res) => {
+  return res.status(200).json({status:"success"});
+});
+
+app.get('/readiness', async (req, res) => {
+  return res.status(200).json({status:"success"});
+});
+
 app.get('/products', async (req, res) => {
   const results = await Product.findAll();
 
