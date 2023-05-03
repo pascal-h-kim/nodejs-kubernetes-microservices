@@ -1,0 +1,67 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Sample Node.js Application
+
+on:
+  workflow_dispatch:
+    inputs:
+      PRODUCT:
+        description: "배포 대상 프로덕트"
+        required: true
+        type: choice
+        options:
+        - "auth"
+        - "orders"
+        - "products"
+      VERSION:
+        description: "배포 버전"
+        required: true
+        type: string
+      AWS_REGION:
+        description: "AWS 리전"
+        required: true
+        type: choice
+        options:
+        - "ap-northeast-3"
+      ASSUME_ROLE:
+        description: "AWS Assume Role"
+        required: true
+        type: choice
+        options:
+        - "arn:aws:iam::721153385053:role/dev-packer-github-packer-role"
+                
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Git Clone
+      uses: actions/checkout@v3
+#      with:
+#        ref: ${{ inputs.VERSION }}
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@master
+      with:
+        aws-region: ${{ inputs.AWS_REGION }}
+        role-to-assume: ${{ inputs.ASSUME_ROLE }}
+        role-session-name: github_oidc
+
+    - name: Setup Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v2
+      
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+  
+    - name: Build, tag, and push docker image to Amazon ECR
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: "ekstest/${{ inputs.PRODUCT }}"
+        IMAGE_TAG: ${{ inputs.VERSION }}
+      run: |
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+  
