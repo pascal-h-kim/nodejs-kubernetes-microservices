@@ -46,7 +46,7 @@ jobs:
       with:
         aws-region: ${{ inputs.AWS_REGION }}
         role-to-assume: ${{ inputs.ASSUME_ROLE }}
-        role-session-name: github_oidc
+        role-session-name: dev-packer-github-packer-role
 
     - name: Setup Docker Buildx
       id: buildx
