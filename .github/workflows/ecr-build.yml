@@ -72,6 +72,7 @@ jobs:
         REPOSITORY: "ekstest/${{ inputs.PRODUCT }}"
         IMAGE_TAG: ${{ inputs.VERSION }}
       run: |
+        cd ${{ inputs.PRODUCT }}
         docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
   
