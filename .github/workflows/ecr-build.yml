@@ -29,12 +29,16 @@ on:
         required: true
         type: choice
         options:
-        - "arn:aws:iam::721153385053:role/dev-packer-github-packer-role"
+        - "arn:aws:iam::721153385053:role/dev-github-actions-ci-role"
                 
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      id-token: write
 
     steps:
     - name: Git Clone
@@ -52,7 +56,7 @@ jobs:
       with:
         aws-region: ${{ inputs.AWS_REGION }}
         role-to-assume: ${{ inputs.ASSUME_ROLE }}
-        role-session-name: dev-packer-github-packer-role
+        # role-session-name: dev-packer-github-packer-role
 
     - name: Setup Docker Buildx
       id: buildx
