@@ -6,12 +6,12 @@ RUN apk add curl
 
 # set our node environment, either development or production
 # defaults to production, compose overrides this to development on build and run
-ARG NODE_ENV=production
-ENV NODE_ENV $NODE_ENV
+# ARG NODE_ENV=production
+# ENV NODE_ENV $NODE_ENV
 
 # default to port 3000 for node
-ARG PORT=3000
-ENV PORT $PORT
+# ARG PORT=3000
+# ENV PORT $PORT
 EXPOSE $PORT
 
 # you'll likely want the latest npm, regardless of node version, for speed and fixes
@@ -35,7 +35,7 @@ ENV PATH app/node_modules/.bin:$PATH
 # a dev and build-only stage. we don't need to
 # copy in code since we bind-mount it
 FROM base as dev
-ENV NODE_ENV=development
+# ENV NODE_ENV=development
 RUN npm install --only=development
 # We use "npm start" here in development and node in production
 CMD ["npm", "start"]
