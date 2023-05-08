@@ -39,6 +39,12 @@ jobs:
       packages: write
       contents: read
       id-token: write
+    env:
+      SERVICE: "auth"
+      NODE_ENV: "development"
+      PORT: "3001"
+      JWT_SECRET: "secret"
+      POSTGRES_URL: "postgres://postgres:postgres@postgres.database.svc.cluster.local:5432/postgres"
 
     steps:
     - name: Git Clone
