@@ -13,6 +13,7 @@ RUN apk add curl
 # ARG PORT=3000
 # ENV PORT $PORT
 EXPOSE $PORT
+RUN echo "PORT: $PORT"
 
 # you'll likely want the latest npm, regardless of node version, for speed and fixes
 # but pin this version for the best stability
