@@ -29,6 +29,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    permissions:
+      packages: read
+      
     steps:
     - name: Git Clone
       uses: actions/checkout@v3
