@@ -10,8 +10,8 @@ RUN apk add curl
 # ENV NODE_ENV $NODE_ENV
 
 # default to port 3000 for node
-# ARG PORT=3000
-# ENV PORT $PORT
+ARG PORT=3000
+ENV PORT $PORT
 EXPOSE $PORT
 RUN echo "PORT: $PORT"
 

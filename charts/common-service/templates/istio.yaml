@@ -1,0 +1,45 @@
+{{- if .Values.istio.create }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ template "common-service.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  hosts:
+  - {{ template "common-service.fullname" . }}
+  http:
+  - route:
+    - destination:
+        host: {{ template "common-service.fullname" . }}
+        subset: release
+      weight: {{ .Values.istio.virtualService.release.weight }}
+    - destination:
+        host: {{ template "common-service.fullname" . }}
+        subset: baseline
+      weight: {{ .Values.istio.virtualService.baseline.weight }}
+    - destination:
+        host: {{ template "common-service.fullname" . }}
+        subset: canary
+      weight: {{ .Values.istio.virtualService.canary.weight }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ template "common-service.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: {{ template "common-service.fullname" . }}
+  subsets:
+    - labels:
+        app: {{ template "common-service.name" . }}
+        release: release
+      name: release
+    - labels:
+        app: {{ template "common-service.name" . }}
+        release: baseline
+      name: baseline
+    - labels:
+        app: {{ template "common-service.name" . }}
+        release: canary
+      name: canary
+{{- end }}

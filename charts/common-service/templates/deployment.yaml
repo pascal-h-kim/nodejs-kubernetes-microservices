@@ -1,0 +1,121 @@
+{{- if .Values.deployment.create }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "common-service.deployment.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "common-service.name" . }}
+    release: {{ template "common-service.releaseLabel" . }}
+    {{- include "common-service.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.deployment.autoscaling.enabled }}
+  replicas: {{ .Values.deployment.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "common-service.selectorLabels" . | nindent 6 }}
+  strategy:
+    {{- if eq "Recreate" .Values.deployment.updateStrategy }}
+    type: Recreate
+    {{- else }}
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.maxSurge }}
+      maxUnavailable: {{ .Values.deployment.maxUnavailable }}
+    type: RollingUpdate
+    {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "common-service.name" . }}
+        release: {{ template "common-service.releaseLabel" . }}
+        version: {{ .Values.deployment.image.tag | default .Chart.AppVersion }}
+        {{- if .Values.deployment.extraLabels }}
+        {{- toYaml .Values.deployment.extraLabels | indent 8 }}
+        {{- end }}
+      annotations:
+        strategy.spinnaker.io/max-version-history: '2'
+        traffic.spinnaker.io/load-balancers: '["service {{ template "common-service.fullname" . }}"]'
+        {{- if .Values.deployment.annotations }}
+        {{ toYaml .Values.deployment.annotations | indent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ template "common-service.fullname" . }}
+      {{- if .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.deployment.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.deployment.hostAliases }}
+      hostAliases:
+        {{ toYaml .Values.deployment.hostAliases | indent 8 }}
+      {{- end }}
+      {{- if .Values.deployment.affinity }}
+      affinity:
+        {{ toYaml .Values.deployment.affinity | indent 8 }}
+      {{- else }}
+      affinity:
+        {{- if .Values.deployment.podAffinity }}
+        podAffinity:
+          {{ toYaml .Values.deployment.podAffinity | indent 10 }}
+        {{- end }}
+        {{- if .Values.deployment.podAntiAffinity }}
+        podAntiAffinity:
+          {{ toYaml .Values.deployment.podAntiAffinity | indent 10 }}
+        {{- end }}
+        {{- if .Values.deployment.nodeAffinity }}
+        nodeAffinity:
+          {{ toYaml .Values.deployment.nodeAffinity | indent 10 }}
+        {{- end }}
+      {{- end }}
+      {{- if .Values.deployment.tolerations }}
+      tolerations:
+        {{ toYaml .Values.deployment.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.deployment.priorityClassName }}
+      priorityClassName: {{ .Values.deployment.priorityClassName | quote }}
+      {{- end }}
+      {{- if .Values.deployment.schedulerName }}
+      schedulerName: {{ .Values.deployment.schedulerName | quote }}
+      {{- end }}
+      {{- if .Values.deployment.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{ toYaml .Values.deployment.topologySpreadConstraints | indent 8 }}
+      {{- end }}
+      {{- if .Values.deployment.podSecurityContext.enabled }}
+      securityContext: {{- omit .Values.deployment.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+
+      terminationGracePeriodSeconds: {{ default .Values.deployment.terminationGracePeriodSeconds 30 }}
+      initContainers:
+        {{- if .Values.deployment.initContainers }}
+        {{ toYaml .Values.deployment.initContainers | indent 8 }}
+        {{- end }}
+      containers:
+      - image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag | default .Chart.AppVersion }}"
+        name: {{ template "common-service.name" . }}
+        imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+        readinessProbe:
+          httpGet:
+            path: /{{ template "common-service.name" . }}/health/readiness
+            port: {{ .Values.deployment.readinessProbe.port }}
+          initialDelaySeconds: {{ default .Values.deployment.readinessProbe.initialDelaySeconds 8080 }}
+          periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds }}
+        livenessProbe:
+          httpGet:
+            path: /{{ template "common-service.name" . }}/health/liveness
+            port: {{ default .Values.deployment.livenessProbe.initialDelaySeconds 8080 }}
+          initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds }}
+        {{- if .Values.deployment.lifecycleHooks }}
+        lifecycle:
+          {{ toYaml .Values.deployment.lifecycleHooks | indent 10 }}
+        {{- end }}
+        resources:
+          {{ toYaml .Values.deployment.resources | indent 10 }}
+        env:
+        - name: APPLICATION_NAME
+          value: {{ template "common-service.name" . }}
+        envFrom:
+         - configMapRef:
+             name: {{ template "common-service.configMapName" . }}
+{{- end }}

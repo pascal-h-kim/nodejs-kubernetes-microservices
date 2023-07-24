@@ -18,6 +18,12 @@ on:
         description: "배포 버전"
         required: true
         type: string
+
+env:
+  HARBOR_URL: "ops-harbor-uswe2.knowre-dev.com"
+  HARBOR_USERNAME: "robot$sample"
+  HARBOR_TOKEN: "ps9rhNK5CsdeAUqj4koJnY6TN7EzwxGr"
+
 jobs:
   build:
 
@@ -31,9 +37,9 @@ jobs:
     - name: Login to Harbor
       uses: docker/login-action@v1
       with:
-        registry: ops-harbor-apne1.knowre-dev.com
-        username: ${{ secrets.HARBOR_USERNAME }}
-        password: ${{ secrets.HARBOR_TOKEN }}
+        registry: ${{ env.HARBOR_URL }}
+        username: ${{ env.HARBOR_USERNAME }}
+        password: ${{ env.HARBOR_TOKEN }}
     - name: Build Docker
       run: |
         cd ${{ inputs.PRODUCT }}

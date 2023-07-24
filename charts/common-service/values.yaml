@@ -1,0 +1,92 @@
+nameOverride: 
+fullnameOverride: 
+releaseLabelOverride: 
+
+deployment:
+  create: true
+  replicas: 1
+  annotations: {}
+  extraLabels: {}
+  hostAliases: {}
+  affinity: {}
+  podAffinity: {}
+  podAntiAffinity: {}
+  nodeAffinity: {}
+  tolerations: {}
+  nodeSelector: {}
+  priorityClassName: ""
+  schedulerName: ""
+  topologySpreadConstraints: []
+  terminationGracePeriodSeconds: 30
+  lifecycleHooks: {}
+  initContainers: {}
+  podSecurityContext: {}
+
+  maxSurge: 25%
+  maxUnavailable: 25%
+
+  image:
+    repository: "infra/common-service"
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 64Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 64Mi
+
+  autoscaling:
+    enable: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
+
+  livenessProbe:
+    initialDelaySeconds: 90
+    periodSeconds: 10
+    port: 8080
+  readinessProbe:
+    initialDelaySeconds: 90
+    periodSeconds: 10
+    port: 8080
+
+config:
+  create: true
+  name:
+  annotations: {}
+  entries: {}
+
+service:
+  create: true
+  labels: {}
+  annotations: {}
+  type: ClusterIP
+
+serviceAccount:
+  create: true
+  annotations: {}
+    # eks.amazonaws.com/role-arn: arn:aws:iam::{aws account id}:role/prd-apne2-kr-common-service-eks-role
+
+istio:
+  create: true
+
+  selector:
+    app: 
+  
+  virtualService:
+    release:
+      weight: 100
+    baseline:
+      weight: 0
+    canary:
+      weight: 0
+
+pdb:
+  create: false
+  minAvailable: 1
+  maxUnavailable: ""
+  annotations: {}
