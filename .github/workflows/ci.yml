@@ -45,7 +45,7 @@ jobs:
       run: |
         cd ${{ inputs.PRODUCT }}
         export DOCKER_BUILDKIT=1
-        docker build -t ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT }}:${{ inputs.VERSION }} \
-        -t ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT }}:latest .
-        docker push ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT }}:${{ inputs.VERSION }}
-        docker push ops-harbor-apne1.knowre-dev.com/ekstest/${{ inputs.PRODUCT }}:latest
+        docker build -t ${{ env.HARBOR_URL }}/ekstest/${{ inputs.PRODUCT }}:${{ inputs.VERSION }} \
+        -t ${{ env.HARBOR_URL }}/ekstest/${{ inputs.PRODUCT }}:latest .
+        docker push ${{ env.HARBOR_URL }}/ekstest/${{ inputs.PRODUCT }}:${{ inputs.VERSION }}
+        docker push ${{ env.HARBOR_URL }}/ekstest/${{ inputs.PRODUCT }}:latest
