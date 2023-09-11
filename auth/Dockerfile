@@ -1,5 +1,5 @@
 # FROM node:14-slim also works here
-FROM node:14-alpine as base
+FROM node:16-alpine as base
 
 # install curl for debugging
 RUN apk add curl
