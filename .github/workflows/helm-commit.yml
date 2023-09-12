@@ -29,9 +29,15 @@ jobs:
         path: helm-deploy-repo
         ref: main
         token: ${{ secrets.API_TOKEN_GITHUB }}
+    - name: file list
+      run:
+        ls -CFR
     - name: Change Helm image tag
       uses: mikefarah/yq@master
       env:
         IMAGE_TAG: ${{ inputs.VERSION }}
       with:
         cmd: yq eval -i '.sample.deployment.image.tag = env(IMAGE_TAG)' 'helm-deploy-repo/environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml'
+    - name: View yaml
+      run:
+        cat helm-deploy-repo/environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml
