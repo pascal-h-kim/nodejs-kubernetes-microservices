@@ -41,3 +41,15 @@ jobs:
     - name: View yaml
       run:
         cat helm-deploy-repo/environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml
+    - name: Push helm repo
+      env:
+        token: ${{ secrets.API_TOKEN_GITHUB }}
+        IMAGE_TAG: ${{ inputs.VERSION }}
+      run: |
+        cd helm-deploy-repo
+        git config --global user.email "hyun.kim@knowre.com"
+        git config --global user.name "pascal-h-kim"
+
+        git add environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml;
+        git commit --message "Update auth image tag to $IMAGE_TAG";
+        git push --prune 
