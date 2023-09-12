@@ -28,6 +28,7 @@ jobs:
         repository: pascal-h-kim/helm-deploy-repo
         path: helm-deploy-repo
         ref: main
+        token: ${{ secrets.API_TOKEN_GITHUB }}
     - name: Change Helm image tag
       uses: mikefarah/yq@master
       env:
