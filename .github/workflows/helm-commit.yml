@@ -27,6 +27,7 @@ jobs:
       with:
         repository: pascal-h-kim/helm-deploy-repo
         path: helm-deploy-repo
+        ref: main
     - name: Change Helm image tag
       uses: mikefarah/yq@master
       env:
