@@ -1,0 +1,35 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Sample Node.js Application
+
+on:
+  workflow_dispatch:
+    inputs:
+      VERSION:
+        description: "배포 버전"
+        required: true
+        type: string
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      packages: write
+      contents: read
+      id-token: write
+
+    steps:
+    - name: Checkout Helm Repository
+      uses: actions/checkout@v3
+      with:
+        repository: pascal-h-kim/helm-deploy-repo
+        path: helm-deploy-repo
+    - name: Change Helm image tag
+      uses: mikefarah/yq@master
+      env:
+        IMAGE_TAG: ${{ inputs.VERSION }}
+      with:
+        cmd: yq eval -i '.image.tag = env(IMAGE_TAG)' 'helm-deploy-repo/environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml'
