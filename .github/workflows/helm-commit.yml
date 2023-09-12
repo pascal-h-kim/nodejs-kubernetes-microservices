@@ -34,4 +34,4 @@ jobs:
       env:
         IMAGE_TAG: ${{ inputs.VERSION }}
       with:
-        cmd: yq eval -i '.image.tag = env(IMAGE_TAG)' 'helm-deploy-repo/environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml'
+        cmd: yq eval -i '.sample.deployment.image.tag = env(IMAGE_TAG)' 'helm-deploy-repo/environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml'
