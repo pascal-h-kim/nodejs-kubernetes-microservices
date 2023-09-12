@@ -49,3 +49,34 @@ jobs:
         -t ${{ env.HARBOR_URL }}/ekstest/${{ inputs.PRODUCT }}:latest .
         docker push ${{ env.HARBOR_URL }}/ekstest/${{ inputs.PRODUCT }}:${{ inputs.VERSION }}
         docker push ${{ env.HARBOR_URL }}/ekstest/${{ inputs.PRODUCT }}:latest
+    - name: Checkout Helm Repository
+      uses: actions/checkout@v3
+      with:
+        repository: pascal-h-kim/helm-deploy-repo
+        path: helm-deploy-repo
+        ref: main
+        token: ${{ secrets.API_TOKEN_GITHUB }}
+    # - name: file list
+    #   run:
+    #     ls -CFR
+    - name: Change Helm image tag
+      uses: mikefarah/yq@master
+      env:
+        IMAGE_TAG: ${{ inputs.VERSION }}
+      with:
+        cmd: yq eval -i '.sample.deployment.image.tag = env(IMAGE_TAG)' 'helm-deploy-repo/environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml'
+    # - name: View yaml
+    #   run:
+    #     cat helm-deploy-repo/environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml
+    - name: Push helm repo
+      env:
+        token: ${{ secrets.API_TOKEN_GITHUB }}
+        IMAGE_TAG: ${{ inputs.VERSION }}
+      run: |
+        cd helm-deploy-repo
+        git config --global user.email "hyun.kim@knowre.com"
+        git config --global user.name "pascal-h-kim"
+
+        git add environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml;
+        git commit --message "Update auth image tag to $IMAGE_TAG";
+        git push --prune 
