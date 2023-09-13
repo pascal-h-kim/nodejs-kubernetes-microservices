@@ -64,10 +64,10 @@ jobs:
       env:
         IMAGE_TAG: ${{ inputs.VERSION }}
       with:
-        cmd: yq eval -i '.sample.deployment.image.tag = env(IMAGE_TAG)' 'helm-deploy-repo/environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml'
+        cmd: yq eval -i '.sample.deployment.image.tag = env(IMAGE_TAG)' 'helm-deploy-repo/environments/dev/charts/sample-apps/${{ inputs.PRODUCT }}/values-${{ inputs.PRODUCT }}-bluegreen.yaml'
     # - name: View yaml
     #   run:
-    #     cat helm-deploy-repo/environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml
+    #     cat helm-deploy-repo/environments/dev/charts/sample-apps/${{ inputs.PRODUCT }}/values-${{ inputs.PRODUCT }}-bluegreen.yaml
     - name: Push helm repo
       env:
         token: ${{ secrets.API_TOKEN_GITHUB }}
@@ -77,6 +77,6 @@ jobs:
         git config --global user.email "hyun.kim@knowre.com"
         git config --global user.name "pascal-h-kim"
 
-        git add environments/dev/charts/sample-apps/auth/values-auth-bluegreen.yaml;
-        git commit --message "Update auth image tag to $IMAGE_TAG";
+        git add environments/dev/charts/sample-apps/${{ inputs.PRODUCT }}/values-${{ inputs.PRODUCT }}-bluegreen.yaml;
+        git commit --message "Update ${{ inputs.PRODUCT }} image tag to $IMAGE_TAG";
         git push --prune 
