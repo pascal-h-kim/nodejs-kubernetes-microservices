@@ -41,6 +41,11 @@ app.get('/readiness', async (req, res) => {
   return res.status(200).json({status:"success"});
 });
 
+app.get('/fault', async (req, res) => {
+  logger.info('/fault called')
+  return res.status(500).json({status:"failed"});
+});
+
 app.post('/signup', async (req, res) => {
   let { name, email, password } = req.body;
   password = await bcrypt.hash(password, 12);
