@@ -55,7 +55,7 @@ jobs:
         repository: pascal-h-kim/helm-deploy-repo
         path: helm-deploy-repo
         ref: main
-        # token: ${{ secrets.API_TOKEN_GITHUB }}
+        token: ${{ secrets.API_TOKEN_GITHUB }}
     # - name: file list
     #   run:
     #     ls -CFR
