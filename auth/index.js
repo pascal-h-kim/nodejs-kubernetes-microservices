@@ -1,5 +1,4 @@
 const express = require('express');
-require('express-async-errors');
 const sequelize = require('./database');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
