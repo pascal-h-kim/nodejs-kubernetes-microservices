@@ -17,7 +17,7 @@ RUN echo "PORT: $PORT"
 
 # you'll likely want the latest npm, regardless of node version, for speed and fixes
 # but pin this version for the best stability
-RUN npm i npm@latest -g
+RUN npm i npm -g
 
 # install dependencies first
 # we have to create the dir with root and change perms
